@@ -1,5 +1,5 @@
 <p align='center'>
-  <img src='./docs/scarf.png' />
+  <img src='./docs/scarf.png' height='100' />
 </p>
 
 # Vision of project (WHY, WHAT and some HOW)
