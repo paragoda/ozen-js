@@ -1,0 +1,43 @@
+{
+  "name": "zima",
+  "version": "0.0.1",
+  "description": "Zima SDK",
+  "main": "./dist/index.js",
+  "module": "./dist/esm/index.js",
+  "types": "./dist/index.d.ts",
+  "scripts": {
+    "build": "tsup src/index.ts --format cjs,esm --dts --legacy-output",
+    "dev": "npm run build --watch",
+    "lint": "eslint \"**/*.ts*\"",
+    "prepare": "npm run build",
+    "prepublishOnly": "npm run lint"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/paragoda/zima-js-sdk"
+  },
+  "keywords": [
+    "zima",
+    "baas",
+    "backend",
+    "sdk"
+  ],
+  "author": "Paragoda",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/paragoda/zima-js-sdk/issues"
+  },
+  "homepage": "https://github.com/paragoda/zima-js-sdk#readme",
+  "files": [
+    "dist",
+    "LICENSE",
+    "README.md"
+  ],
+  "devDependencies": {
+    "tsup": "^6.3.0",
+    "eslint": "7.32.0",
+    "eslint-config-custom": "*",
+    "tsconfig": "*",
+    "typescript": "^4.5.3"
+  }
+}
