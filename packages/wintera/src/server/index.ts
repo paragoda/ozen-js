@@ -1,6 +1,6 @@
 import { Model, Table } from './types'
 
-class ZimaAdmin {
+class WinteraServer {
   private _url: string
   private _token: string
   private tables: Table<object>[] = []
@@ -24,6 +24,6 @@ class ZimaAdmin {
   }
 }
 
-const zimaadmin = (url: string, token: string) => new ZimaAdmin(url, token)
+const winteraserver = (url: string, token: string) => new WinteraServer(url, token)
 
-export { zimaadmin, ZimaAdmin }
+export { winteraserver, WinteraServer }

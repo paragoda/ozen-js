@@ -1,8 +1,8 @@
-import { zimaclient } from '.'
+import { winteraClient } from './index'
 import { select } from './select'
 
 // show dx
-const zima = zimaclient('myapidomen.com')
+const zima = winteraClient('myapidomen.com')
 
 const posts = zima.table('posts')
 
@@ -10,8 +10,12 @@ const posts = zima.table('posts')
 // INSERT
 const item = { name: 'how to', stars: 10 }
 
+type I1 = {
+  id: string,
+  name: string
+}
 /// [{ id: 'tcrs-bsrc-ggcc-rtcb', name: 'how to' }]
-const i1 = posts.insert([item], 'id, name')
+const i1 = posts.insert<I1>([item], 'id, name')
 
 const items = [item, { name: 'why to', stars: 100 }]
 
@@ -23,6 +27,10 @@ const i2 = posts.insert(items, null)
   { id: 'rstg-bcrs-btdq-kjhu', name: 'why to', stars: 100 }
 ]*/
 const i3 = posts.insert(items)
+
+
+const neoi1 = posts.insertRet<I1>([item])
+const neoi2 = posts.insertRet([item])
 
 
 // UPDATE

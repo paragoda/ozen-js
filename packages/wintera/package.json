@@ -1,7 +1,7 @@
 {
-  "name": "zima",
+  "name": "wintera",
   "version": "0.0.1",
-  "description": "Zima SDK",
+  "description": "Wintera SDK",
   "main": "./dist/index.js",
   "module": "./dist/esm/index.js",
   "types": "./dist/index.d.ts",
@@ -14,10 +14,10 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/paragoda/zima-js-sdk"
+    "url": "git+https://github.com/paragoda/wintera-js-sdk"
   },
   "keywords": [
-    "zima",
+    "wintera",
     "baas",
     "backend",
     "sdk"
@@ -25,9 +25,9 @@
   "author": "Paragoda",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/paragoda/zima-js-sdk/issues"
+    "url": "https://github.com/paragoda/wintera-js-sdk/issues"
   },
-  "homepage": "https://github.com/paragoda/zima-js-sdk#readme",
+  "homepage": "https://github.com/paragoda/wintera-js-sdk#readme",
   "files": [
     "dist",
     "LICENSE",

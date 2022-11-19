@@ -1,6 +1,6 @@
 import Table from './table'
 
-class ZimaClient {
+class WinteraClient {
   private readonly _url: string
 
   public constructor(url: string) {
@@ -13,8 +13,8 @@ class ZimaClient {
 }
 
 // functional way
-function zimaclient(url: string) {
-  return new ZimaClient(url)
+function winteraClient(url: string) {
+  return new WinteraClient(url)
 }
 
-export { zimaclient, ZimaClient }
+export { winteraClient, WinteraClient }

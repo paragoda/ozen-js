@@ -21,26 +21,31 @@ class Table {
     return await data.json()
   }
 
-  public async query<T extends object>() {
-
+  // TODO: check on backend for tables polices
+  public async query<T extends object>(sql: string): Promise<T[]> {
+    return await this.fetchRoute(`/api/db/${sql}`, 'GET')
   }
 
-  public async insert<T extends object>(items: T[], returning: string | null = '*') {
-    return await this.fetchRoute(`/api/db/${this._name}`, 'POST', json({
-      values: items, returning
-    }))
+  public async insert<T extends object>(
+    items: object[], returning: string | null = '*'
+  ): Promise<T> {
+    return await this.fetchRoute(`/api/db/${this._name}`, 'POST',
+      json({ values: items, returning }))
   }
 
   // TODO: check on backend is there inner select for tables polices
-  public async update<T extends object>(item: T, where: string, returning: string | null = '*') {
-    return await this.fetchRoute(`/api/db/${this._name}`, 'PATCH', json({
-      values: item, where, returning
-    }))
+  public async update<T extends object>(
+    item: object, where: string, returning: string | null = '*'
+  ): Promise<T> {
+    return await this.fetchRoute(`/api/db/${this._name}`, 'PATCH',
+      json({ values: item, where, returning }))
   }
 
   // need it ???
   // TODO: check on backend is there inner select for tables polices
-  public async upsert<T extends object>(item: T, where: string, returning: string | null = '*') {
+  public async upsert<T extends object>(
+    item: T, where: string, returning: string | null = '*'
+  ): Promise<T> {
     return await this.fetchRoute(`/api/db/${this._name}`, 'PUT',
       json({ values: item, where, returning })
     )

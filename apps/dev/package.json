@@ -1,5 +1,5 @@
 {
-  "name": "zima-js-sdk-dev",
+  "name": "wintera-js-sdk-dev",
   "version": "0.0.1",
   "private": true,
   "scripts": {
@@ -11,7 +11,8 @@
   "dependencies": {
     "next": "13.0.0",
     "react": "^18.2.0",
-    "react-dom": "^18.2.0"
+    "react-dom": "^18.2.0",
+    "wintera": "*"
   },
   "devDependencies": {
     "@babel/core": "^7.0.0",
