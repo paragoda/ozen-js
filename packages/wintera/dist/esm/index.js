@@ -1,3 +1,9 @@
+var __defProp = Object.defineProperty;
+var __export = (target, all) => {
+  for (var name in all)
+    __defProp(target, name, { get: all[name], enumerable: true });
+};
+
 // src/client/table.ts
 var headers = {};
 function json(data) {
@@ -55,7 +61,116 @@ var WinteraClient = class {
 function winteraClient(url) {
   return new WinteraClient(url);
 }
+
+// src/server/server.ts
+var WinteraServer = class {
+  constructor(init) {
+    this._init = init;
+  }
+  client() {
+  }
+  route(name, sql) {
+  }
+};
+var server = (init) => new WinteraServer(init);
+
+// src/server/table.ts
+function table(data) {
+  let fields = {};
+  return {
+    access: data.access,
+    fields
+  };
+}
+
+// src/server/builders/type.ts
+var TypeBuilder = class {
+  constructor(name) {
+    this._name = name;
+  }
+  pk() {
+    return this;
+  }
+  optional() {
+    return this;
+  }
+  unique() {
+    return this;
+  }
+  check() {
+  }
+};
+var NumBuilder = class extends TypeBuilder {
+  unsigned() {
+  }
+};
+var IntBuilder = class extends NumBuilder {
+  autoincrement() {
+    this._name = this._name.replace("int", "autoincrement");
+  }
+};
+
+// src/server/builders/col.ts
+var tb = (name) => new TypeBuilder(name);
+var nb = (name) => new NumBuilder(name);
+var ib = (name) => new IntBuilder(name);
+var ColBuilder = class {
+  constructor() {
+    this.bit = () => tb("bit");
+    this.smallint = () => ib("smallint");
+    this.int = () => ib("int");
+    this.bigint = () => ib("bigint");
+    this.float = () => nb("float");
+    this.double = () => nb("double");
+    this.decimal = () => nb("decimal");
+    this.date = () => tb("date");
+    this.time = () => tb("time");
+    this.datetime = () => tb("datetime");
+    this.timestamp = () => tb("timestamp");
+    this.bool = () => tb("bool");
+    this.uuid = () => tb("uuid");
+    this.text = () => tb("text");
+    this.enum = (...options) => tb("enum()");
+    this.json = () => tb("json");
+  }
+  varchar(size) {
+    if (size < 1)
+      throw new Error();
+    return tb(`varchar(${size})`);
+  }
+  fk(key, independ = false) {
+    return tb("key");
+  }
+};
+var cb = new ColBuilder();
+
+// src/server/builders/access.ts
+var access_exports = {};
+__export(access_exports, {
+  anyone: () => anyone,
+  authorized: () => authorized,
+  nobody: () => nobody,
+  userId: () => userId
+});
+function anyone() {
+}
+function nobody() {
+}
+function authorized() {
+}
+function userId(field) {
+}
+
+// src/server/index.ts
+var wql = {};
 export {
+  ColBuilder,
   WinteraClient,
-  winteraClient
+  WinteraServer,
+  access_exports as ab,
+  cb,
+  server,
+  table,
+  winteraClient,
+  wql
 };
