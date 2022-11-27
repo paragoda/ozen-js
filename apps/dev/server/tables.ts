@@ -13,10 +13,9 @@ const posts = table<Post>({
     stars: cb.bigint(),//.min(0).default(0),
     data: cb.json().optional(),
     img: cb.text().optional(),
-    uid: cb.user() // mean foreign key to user id
+    uid: cb.user() // mean foreign key to user id,
   },
   access: ({ uid }) => ({
-    t: '',
     select: ab.anyone(),
     insert: ab.authorized(),
     update: ab.userId(uid),

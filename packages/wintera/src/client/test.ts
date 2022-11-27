@@ -1,96 +1,68 @@
-import { winteraClient } from './index'
-import { select } from './select'
+import { model } from "./model"
 
 // show dx
-const zima = winteraClient('myapidomen.com')
+const w: any = {}
 
-const posts = zima.table('posts')
+// shared
+const postsSchema = {
+  id: w.uuid(),
+  name: w.varchar(100),
+  stars: w.bigint(),
+  data: w.json(),
+  img: w.text(),
+  uid: w.user()
+}
 
+const postsSchemaT = {
+  id: '',
+  name: '',
+  stars: 1,
+}
+
+const posts = model(postsSchemaT)
 
 // INSERT
-const item = { name: 'how to', stars: 10 }
+/*
+Q? Return all data by default ?
+Data wich we insert is chageable in runtime
+(insert new object each time)
+Ideas: 
+  1. put insert into the end of chain + use as executor
+  2. return function wich will take item and insert it
+  3. make executor function
+*/
 
-type I1 = {
-  id: string,
-  name: string
+
+function c<T extends string>(a: T[]) {
+  return a;
 }
-/// [{ id: 'tcrs-bsrc-ggcc-rtcb', name: 'how to' }]
-const i1 = posts.insert<I1>([item], 'id, name')
 
-const items = [item, { name: 'why to', stars: 100 }]
+// 1
+const newPost = { id: 'changeable data' }
+// doesn't work
+// always all keys in return (newPostData) ):
+const [newPostData, newPostDataOk] = await posts
+  .output(p => [p.id, p.stars]).insert(newPost)
 
-/// null
-const i2 = posts.insert(items, null)
+// const [newPostData, newPostDataOk] = await posts
+//   .output(({ id, stars }) => ({ id, stars })).insert(newPost)
 
-/*[
-  { id: 'tcrs-bsrc-ggcc-rtcb', name: 'how to', stars: 10 }, 
-  { id: 'rstg-bcrs-btdq-kjhu', name: 'why to', stars: 100 }
-]*/
-const i3 = posts.insert(items)
+if (newPostDataOk) {
+  newPostData
+}
 
+// prepared ?
+const preparedI1 = posts.output(p => p)
+const [newPreparedPost, nppok] = await preparedI1.insert({ id: 'prepared, only change data' })
 
-const neoi1 = posts.insertRet<I1>([item])
-const neoi2 = posts.insertRet([item])
-
-
-// UPDATE
-const id = 'tcrs-bsrc-ggcc-rtcb'
-
-/// { id: 'tsrc-tsrct-cstgc' }
-const u1 = posts.update({ stars: 50 }, `id = ${id}`, 'id, money')
-
-/// null
-const u2 = posts.update({ stars: 5420 }, `id = ${id}`, null)
 
 
 // DELETE
-const d1 = posts.delete(`id = ${id}`)
+const d1ok = await posts.delete(p => p.id.eq(10))
+if (!d1ok) console.error('sorry but item wasnt deleted')
 
 
-// SELECT
 
-const test = () => {
-  console.clear()
-
-  const long = select('id, name, price')
-    .from('users')
-    .join('products').on('products.uid = users.id')
-    .join('urls').on('url.uid = users.id')
-    .where('price > 100')
-    .groupby('category')
-    .having('COUNT(*) > 100')
-    .orderby('price')
-
-  console.log(long.toString(), long.toString().length)
-
-
-  const complex = select('users.name, products.id')
-    .from('users')
-    .join('products').on('users.id == products.uid')
-    .where(`users.name IS NOT NULL AND products.count > ${select('avg(count)').from('products')}`)
-    .orderby('products.price DESC')
-    .having('count(*) > 100')
-
-  console.log(complex.toString(), complex.toString().length)
-
-  // const q1 = select('nums')
-  //   .from('employee')
-  //   .where(`id = ${select('MIN id').from('Employee')}`)
-  //   .having('COUNT(*) == 1')
-
-
-  // alternative
-  // .as('Minimal')
-  // const alt = select('id, name, price', count(), min('price'))
-  //   .distinct()
-  //   .from('users')
-  //   //   .join('products').on(equals('products.uid', 'users.id'))
-  //   //   .join('urls').on(col('ulr.uid').equals('users.id'))
-  //   .where(and(col('price').bigger(100), col('products.price').in(q1)))
-  //   .groupby('category')
-  //   .having(count().bigger(100))
-  //   .orderby('price')
-}
 
 // ???????????????????????????????????
 // multifetch

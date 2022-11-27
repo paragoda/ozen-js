@@ -45,4 +45,10 @@ type Table<T extends object> = {
 }
 
 
-export type { Model, Table, Fields, TableInit, WinteraServerInit }
+type DbTemplate = {
+  [key: string]: {
+    [key: string]: any
+  }
+}
+
+export type { DbTemplate, Model, Table, Fields, TableInit, WinteraServerInit }

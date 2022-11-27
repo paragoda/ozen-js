@@ -6,7 +6,7 @@ function json(data: any): string {
   return JSON.stringify(data)
 }
 
-class Table {
+class Table<T extends object> {
   private readonly _name: string
   private readonly _url: string
 
@@ -51,8 +51,6 @@ class Table {
     )
   }
 
-  // PERFECT DELETE
-  // TODO: check on backend is there inner select for tables polices
   public async delete(condition: string) {
     return await this.fetchRoute(`/api/db//${this._name}?where=${condition}`, 'DELETE')
   }

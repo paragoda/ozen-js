@@ -1,5 +1,8 @@
 // shared models from db
 
+// problems with types is that i can't make object based pn types
+// i can't get keys
+
 type Post = {
   id: string
   name: string
@@ -7,6 +10,8 @@ type Post = {
   data: object
   img: string
   uid: string
+
+  comments: PostComment[]
 }
 
 type PostComment = {
@@ -33,6 +38,5 @@ type Db = {
   comments: PostComment
   postTags: PostTag
 }
-
 
 export type { Db, Post, Tag, PostTag, PostComment }

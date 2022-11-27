@@ -1,10 +1,9 @@
-import { IBooleanField, INumberField, IStringField } from '../types/field'
-import { IntField, JsonField, NumberField, StringField, TypeBuilder } from './type'
+import { Field, IBooleanField, INumberField, IStringField } from '../types/field'
+import { IntField, JsonField, NumberField, StringField } from './type'
 
 // maybe they should be in class
 // but I hate this
 // just keep it local
-const tb = (name: string) => new TypeBuilder(name)
 
 // ColType
 class ColBuilder {
@@ -45,7 +44,7 @@ class ColBuilder {
   }
 
   // ?????????????????????????????????????
-  public enum = (...options: string[]) => tb('enum()')
+  // public enum = (...options: string[]) => tb('enum()')
 
 
   public json = () => new JsonField()
@@ -53,9 +52,9 @@ class ColBuilder {
   // TODO: rename independ
   // independ means not to delete when delete pk
   // THINK MORE
-  public fk(key: TypeBuilder, independ: boolean = false) {
-    return tb('key')
-  }
+  // public fk(key: Field<any>, independ: boolean = false) {
+  //   return tb('key')
+  // }
 }
 
 const cb = new ColBuilder()
