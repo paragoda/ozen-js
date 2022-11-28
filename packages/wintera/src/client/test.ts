@@ -1,18 +1,17 @@
 import { model } from "./model"
-
-// show dx
-const w: any = {}
+import { w } from "../shared/schema"
 
 // shared
 const postsSchema = {
-  id: w.uuid(),
-  name: w.varchar(100),
-  stars: w.bigint(),
-  data: w.json(),
-  img: w.text(),
-  uid: w.user()
+  id: w.uuid().optional(),           // can be undefined during insert
+  name: w.varchar(100),   // should be inserted  
+  stars: w.bigint(),      // should be inserted
+  data: w.json().optional(), // can be undefined
+  img: w.text().default(''), // can be undefined
+  uid: w.user()              // should be inserted
 }
 
+// Placeholder to get right types
 const postsSchemaT = {
   id: '',
   name: '',
@@ -23,7 +22,7 @@ const posts = model(postsSchemaT)
 
 // INSERT
 /*
-Q? Return all data by default ?
+Q? Return all data by default ? NO
 Data wich we insert is chageable in runtime
 (insert new object each time)
 Ideas: 
@@ -32,37 +31,63 @@ Ideas:
   3. make executor function
 */
 
+async function test() {
+  // 1
+  const newPostInput = { name: 'changeable data' }
 
-function c<T extends string>(a: T[]) {
-  return a;
+  const i1Error = await posts.insert(newPostInput)
+
+  const [newPost, newPostOk] = await posts
+    .output(p => [p.id, p.stars]).insert(newPostInput)
+
+  // return list of posts with full data
+  const [newPosts, newPostsOk] = await posts
+    .output(p => p).insert([newPostInput, { name: 'second post' }])
+
+
+  // exception free = error as return value (no need try, catch)
+  if (newPostOk) {
+    newPost // post with id and stars
+  } else {
+    newPost // error
+  }
+
+
+  // UPDATE
+  const [updatedPost, updateOk] = await posts
+    .output(p => [p.id, p.name])
+    .where(p => p.id.eq(10))
+    .update({ name: 'new name' })
+
+  /// NEED REWORK: only ok or not
+  const upError = await posts
+    .where(p => p.id.eq(10))
+    .update({ name: 'new name' })
+
+  if (newPostOk) {
+    const [u3, u3Ok] = await posts
+      .output(p => [p.id, p.name])
+      .where(p => (p.name.eq('').and.stars.less(p.stars.avg())).or(p.id.eq(newPost.id).or.id.less(10)))
+      .update({ name: 'new name also str' })
+  }
+
+
+
+
+  // DELETE
+  const d1 = await posts.delete(p => p.id.eq(10))
+  if (d1) console.error(d1)
+
+  const d2 = await posts.delete(p => p.stars.less(100))
+  if (d2) console.error(d2)
+
+
+
+  // SELECT
+  const [postsList, postsListOk] = posts
+    .where(p => p.stars.more(100))
+    .select(p => [p.id, p.name])
 }
-
-// 1
-const newPost = { id: 'changeable data' }
-// doesn't work
-// always all keys in return (newPostData) ):
-const [newPostData, newPostDataOk] = await posts
-  .output(p => [p.id, p.stars]).insert(newPost)
-
-// const [newPostData, newPostDataOk] = await posts
-//   .output(({ id, stars }) => ({ id, stars })).insert(newPost)
-
-if (newPostDataOk) {
-  newPostData
-}
-
-// prepared ?
-const preparedI1 = posts.output(p => p)
-const [newPreparedPost, nppok] = await preparedI1.insert({ id: 'prepared, only change data' })
-
-
-
-// DELETE
-const d1ok = await posts.delete(p => p.id.eq(10))
-if (!d1ok) console.error('sorry but item wasnt deleted')
-
-
-
 
 // ???????????????????????????????????
 // multifetch

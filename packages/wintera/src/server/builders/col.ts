@@ -1,4 +1,4 @@
-import { Field, IBooleanField, INumberField, IStringField } from '../types/field'
+import { IBooleanField, IStringField } from '../types/field'
 import { IntField, JsonField, NumberField, StringField } from './type'
 
 // maybe they should be in class
