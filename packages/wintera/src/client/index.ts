@@ -25,3 +25,5 @@ function winteraClient<T extends DbTemplate>(url: string) {
 }
 
 export { winteraClient, WinteraClient }
+export * from './model'
+export * from './schema/index'

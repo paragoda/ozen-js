@@ -1,0 +1,1 @@
+export const ozen = () => "hello from ozen"

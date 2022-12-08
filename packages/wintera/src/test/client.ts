@@ -1,55 +1,43 @@
-import { model } from "./model"
-import { w } from "../shared/schema"
+import { w, model } from "../client"
 
-// shared
 const postsSchema = {
-  id: w.uuid().optional(),           // can be undefined during insert
-  name: w.varchar(100),   // should be inserted  
-  stars: w.bigint(),      // should be inserted
-  data: w.json().optional(), // can be undefined
-  img: w.text().default(''), // can be undefined
-  uid: w.user()              // should be inserted
+  id: w.uuid().defaulted(),           // can be undefined during insert
+  name: w.varchar().nullable(),   // should be inserted  
+  stars: w.bigint().nullable(),      // should be inserted
+  // data: w.json().optional(), // can be undefined
+  pro: w.bool(), // can be undefined
+  // uid: w.user()              // should be inserted
 }
 
-// Placeholder to get right types
-const postsSchemaT = {
-  id: '',
-  name: '',
-  stars: 1,
+class PostSchema {
+  id = w.uuid().defaulted()
+  name = w.varchar().nullable()
+  stars = w.bigint().nullable()
+  pro = w.bool()
 }
 
-const posts = model(postsSchemaT)
-
-// INSERT
-/*
-Q? Return all data by default ? NO
-Data wich we insert is chageable in runtime
-(insert new object each time)
-Ideas: 
-  1. put insert into the end of chain + use as executor
-  2. return function wich will take item and insert it
-  3. make executor function
-*/
+const posts = model(postsSchema)
 
 async function test() {
   // 1
-  const newPostInput = { name: 'changeable data' }
+  const newPostInput = { name: 'changeable data', pro: true }
 
   const i1Error = await posts.insert(newPostInput)
 
   const [newPost, newPostOk] = await posts
-    .output(p => [p.id, p.stars]).insert(newPostInput)
+    .output(p => [p.id, p.stars, p.pro]).insert(newPostInput)
 
   // return list of posts with full data
   const [newPosts, newPostsOk] = await posts
-    .output(p => p).insert([newPostInput, { name: 'second post' }])
+    .output(p => p).insert([newPostInput, { name: 'second post', pro: true, stars: 123 }])
 
 
   // exception free = error as return value (no need try, catch)
-  if (newPostOk) {
+  if (newPostsOk && newPostOk) {
     newPost // post with id and stars
+    newPosts[0]
   } else {
-    newPost // error
+    newPosts // error
   }
 
 
@@ -58,6 +46,10 @@ async function test() {
     .output(p => [p.id, p.name])
     .where(p => p.id.eq(10))
     .update({ name: 'new name' })
+
+  if (updateOk) {
+    updatedPost
+  }
 
   /// NEED REWORK: only ok or not
   const upError = await posts
@@ -69,6 +61,7 @@ async function test() {
       .output(p => [p.id, p.name])
       .where(p => (p.name.eq('').and.stars.less(p.stars.avg())).or(p.id.eq(newPost.id).or.id.less(10)))
       .update({ name: 'new name also str' })
+
   }
 
 
@@ -87,6 +80,7 @@ async function test() {
   const [postsList, postsListOk] = posts
     .where(p => p.stars.more(100))
     .select(p => [p.id, p.name])
+
 }
 
 // ???????????????????????????????????
@@ -120,3 +114,41 @@ const data = fetch(
   }
 )
 */
+
+
+// IMAGINE
+
+var a = await posts.output(p => ({
+  id: p.id,
+  name: p.name,
+  pro: p.pro,
+  stars: p.stars
+})).insert({ name: 'changeable data', pro: true })
+
+if (a[1]) {
+
+}
+
+
+
+
+function select<T extends object>(schema: T, selector: (obj: T) => Partial<T>) {
+  // I want { id: 'id' }
+  // to get this i will do magic with 'any'
+  const obj = {} as any
+  for (const key in schema) {
+    Object.defineProperty(schema, key, key.toString())
+  }
+
+  // dto { id: 'id' }
+  const dto: any = selector(obj)
+
+
+}
+
+type N = {
+  id: string,
+  size: number
+}
+
+const nnn = select({ id: '', size: 10 }, n => ({ id: n.id }))
